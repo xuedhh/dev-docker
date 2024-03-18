@@ -1,0 +1,58 @@
+version: "3.9"
+
+networks:
+  dev:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${SUBNET}/16
+          gateway: ${GATEWAY}
+
+services:
+
+  nginx:
+    container_name: zzmed-nginx
+    image: nginx:1.21.5
+    volumes:
+      - "./projects:/var/www"
+      - "./nginx_template:/etc/nginx/conf.d/template"
+      - "./init-web.sh:/tmp/init-web.sh"
+    ports:
+      - "8088:8088"
+    environment:
+      - PHP_HOST=${PHP_HOST}
+    command: #执行init-web.sh中的脚本，取
+      - sh
+      - /tmp/init-web.sh
+    restart: always
+    networks:
+      dev:
+        ipv4_address: ${NGINX_HOST}
+
+  php:
+    container_name: zzmed-php
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes: #这边是指 将 上层目录的projects中的项目 具名挂载在 PHP容器（zzmed-php）下 /var/www目录中
+      - "./projects:/var/www"
+    environment:
+      PHP_IDE_CONFIG: serverName=zzmed-php
+    cap_add:
+      - SYS_PTRACE
+    command: #将nginx容器的IP与 nginx 中配置的域名同步写入到PHP容器（zzmend-php）下 /etc/hosts文件中
+      - /bin/bash
+      - -c
+      - |
+        echo ${NGINX_HOST}   common-api.zz-med-local.com >> /etc/hosts
+        echo ${NGINX_HOST}   doc-api.zz-med-local.com >> /etc/hosts
+        echo ${NGINX_HOST}   patient-api.zz-med-local.com >> /etc/hosts
+        echo ${NGINX_HOST}   admin-center.zz-med-local.com >> /etc/hosts
+        echo ${NGINX_HOST}   saas-base-service.zz-med-local.com >> /etc/hosts
+        echo ${NGINX_HOST}   agreement-service-base.zz-med-local.com >> /etc/hosts
+        echo ${NGINX_HOST}   saas-survey-service.zz-med-local.com >> /etc/hosts
+        echo ${NGINX_HOST}   bp-api.zz-med-local.com >> /etc/hosts
+        php-fpm
+    networks:
+      dev:
+        ipv4_address: ${PHP_HOST}
