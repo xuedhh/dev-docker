@@ -17,7 +17,7 @@ services:
       - "./nginx_template:/etc/nginx/conf.d/template"
       - "./init-web.sh:/tmp/init-web.sh"
     ports:
-      - "80:808"
+      - "80:80"
     environment:
       - PHP_HOST=${PHP_HOST}
     command: #执行init-web.sh中的脚本，取
