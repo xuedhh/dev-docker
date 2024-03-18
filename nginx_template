@@ -1,8 +1,8 @@
 # Nginx configuration
 
 server {
-    listen 8088;
-    server_name ${APP_NAME}.zz-med-local.com;
+    listen 80;
+    server_name ${APP_NAME}.com;
 
     index index.php index.html;
     error_log  /var/log/nginx/${APP_NAME}-error.log;

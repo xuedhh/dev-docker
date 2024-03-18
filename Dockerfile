@@ -30,9 +30,9 @@ RUN set -eux \
   && php composer-setup.php && php -r "unlink('composer-setup.php');" \
   && mv composer.phar /usr/local/bin/composer && chmod +x /usr/local/bin/composer
 
-#COPY ./xdebug.ini /tmp/xdebug.ini
+COPY ./xdebug.ini /tmp/xdebug.ini
 
-#RUN cat /tmp/xdebug.ini >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN cat /tmp/xdebug.ini >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN mkdir -p /tmp/zzmed/sql && chmod -R 777 /tmp/zzmed
 

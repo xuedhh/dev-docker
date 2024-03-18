@@ -9,7 +9,6 @@ networks:
           gateway: ${GATEWAY}
 
 services:
-
   nginx:
     container_name: zzmed-nginx
     image: nginx:1.21.5
@@ -18,7 +17,7 @@ services:
       - "./nginx_template:/etc/nginx/conf.d/template"
       - "./init-web.sh:/tmp/init-web.sh"
     ports:
-      - "8088:8088"
+      - "80:808"
     environment:
       - PHP_HOST=${PHP_HOST}
     command: #执行init-web.sh中的脚本，取
@@ -44,14 +43,7 @@ services:
       - /bin/bash
       - -c
       - |
-        echo ${NGINX_HOST}   common-api.zz-med-local.com >> /etc/hosts
-        echo ${NGINX_HOST}   doc-api.zz-med-local.com >> /etc/hosts
-        echo ${NGINX_HOST}   patient-api.zz-med-local.com >> /etc/hosts
-        echo ${NGINX_HOST}   admin-center.zz-med-local.com >> /etc/hosts
-        echo ${NGINX_HOST}   saas-base-service.zz-med-local.com >> /etc/hosts
-        echo ${NGINX_HOST}   agreement-service-base.zz-med-local.com >> /etc/hosts
-        echo ${NGINX_HOST}   saas-survey-service.zz-med-local.com >> /etc/hosts
-        echo ${NGINX_HOST}   bp-api.zz-med-local.com >> /etc/hosts
+        echo ${NGINX_HOST}   remote-api.com >> /etc/hosts
         php-fpm
     networks:
       dev:
